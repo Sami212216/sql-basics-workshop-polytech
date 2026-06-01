@@ -1,0 +1,190 @@
+-- ============================================================
+-- Exercice 5 : Mises a jour UPDATE et suppressions DELETE
+-- Projet : Gestion de l'infrastructure de donnees du ZEvent
+-- Realise par : Sami Ben Hamouda
+-- ============================================================
+
+-- ============================================================
+-- IMPORTANT :
+-- Ce script utilise une transaction avec ROLLBACK.
+-- Cela permet de tester les UPDATE et DELETE sans detruire
+-- les donnees necessaires aux exercices suivants.
+-- ============================================================
+
+BEGIN;
+
+-- ============================================================
+-- PARTIE A : UPDATE
+-- ============================================================
+
+-- ============================================================
+-- 1. Verification avant modification du montant du defi
+-- ============================================================
+
+SELECT
+    id_defi,
+    intitule,
+    montant_palier,
+    etat_validation
+FROM defi
+WHERE intitule = 'Saut en parachute';
+
+-- ============================================================
+-- 2. Augmentation de 10% du montant palier
+--    du defi "Saut en parachute"
+-- ============================================================
+
+UPDATE defi
+SET montant_palier = montant_palier * 1.10
+WHERE intitule = 'Saut en parachute';
+
+-- ============================================================
+-- 3. Verification apres modification
+-- ============================================================
+
+SELECT
+    id_defi,
+    intitule,
+    montant_palier,
+    etat_validation
+FROM defi
+WHERE intitule = 'Saut en parachute';
+
+-- ============================================================
+-- 4. Verification des defis non valides ayant au moins
+--    3 participants avant validation
+-- ============================================================
+
+SELECT
+    d.id_defi,
+    d.intitule,
+    d.etat_validation,
+    COUNT(pd.id_streamer) AS nombre_participants
+FROM defi d
+JOIN participation_defi pd
+    ON d.id_defi = pd.id_defi
+WHERE d.etat_validation = FALSE
+GROUP BY
+    d.id_defi,
+    d.intitule,
+    d.etat_validation
+HAVING COUNT(pd.id_streamer) >= 3;
+
+-- ============================================================
+-- 5. Validation de tous les defis non valides ayant
+--    au moins 3 participants
+-- ============================================================
+
+UPDATE defi
+SET etat_validation = TRUE
+WHERE etat_validation = FALSE
+  AND id_defi IN (
+      SELECT
+          id_defi
+      FROM participation_defi
+      GROUP BY
+          id_defi
+      HAVING COUNT(id_streamer) >= 3
+  );
+
+-- ============================================================
+-- 6. Verification apres validation
+-- ============================================================
+
+SELECT
+    d.id_defi,
+    d.intitule,
+    d.etat_validation,
+    COUNT(pd.id_streamer) AS nombre_participants
+FROM defi d
+JOIN participation_defi pd
+    ON d.id_defi = pd.id_defi
+GROUP BY
+    d.id_defi,
+    d.intitule,
+    d.etat_validation
+ORDER BY
+    d.id_defi ASC;
+
+-- ============================================================
+-- PARTIE B : DELETE
+-- ============================================================
+
+-- ============================================================
+-- 7. Verification des streams non termines avant suppression
+-- ============================================================
+
+SELECT
+    id_stream,
+    titre,
+    heure_debut,
+    heure_fin,
+    date_fin_effective
+FROM stream
+WHERE date_fin_effective IS NULL
+ORDER BY
+    heure_debut ASC;
+
+-- ============================================================
+-- 8. Suppression des streams non termines
+-- ============================================================
+
+DELETE FROM stream
+WHERE date_fin_effective IS NULL;
+
+-- ============================================================
+-- 9. Verification apres suppression des streams non termines
+-- ============================================================
+
+SELECT
+    id_stream,
+    titre,
+    heure_debut,
+    heure_fin,
+    date_fin_effective
+FROM stream
+ORDER BY
+    id_stream ASC;
+
+-- ============================================================
+-- 10. Verification des creneaux passes avant suppression
+-- ============================================================
+
+SELECT
+    id_creneau,
+    id_streamer,
+    date_debut_autorisee,
+    date_fin_autorisee
+FROM creneau
+WHERE date_fin_autorisee < CURRENT_DATE
+ORDER BY
+    date_fin_autorisee ASC;
+
+-- ============================================================
+-- 11. Suppression des creneaux passes
+-- ATTENTION : avec ON DELETE CASCADE, les streams lies
+-- a ces creneaux peuvent aussi etre supprimes.
+-- ============================================================
+
+DELETE FROM creneau
+WHERE date_fin_autorisee < CURRENT_DATE;
+
+-- ============================================================
+-- 12. Verification apres suppression des creneaux passes
+-- ============================================================
+
+SELECT
+    id_creneau,
+    id_streamer,
+    date_debut_autorisee,
+    date_fin_autorisee
+FROM creneau
+ORDER BY
+    id_creneau ASC;
+
+-- ============================================================
+-- 13. Annulation volontaire des modifications
+-- pour conserver la base intacte pour les exercices suivants.
+-- ============================================================
+
+ROLLBACK;
