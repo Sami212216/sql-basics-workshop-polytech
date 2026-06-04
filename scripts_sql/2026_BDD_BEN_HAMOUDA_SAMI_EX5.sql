@@ -156,10 +156,10 @@ WHERE date_fin_autorisee < CURRENT_DATE
 ORDER BY
     date_fin_autorisee ASC;
 
--- =================================================================================================
+-- =================================================================================================================
 -- 11. Suppression des creneaux passés
--- ATTENTION : avec ON DELETE CASCADE, les streams lies à ces creneaux peuvent aussi etre supprimes.
--- =================================================================================================
+-- Il faut faire attention car avec ON DELETE CASCADE, les streams liés à ces créneaux peuvent aussi etre supprimés.
+-- =================================================================================================================
 
 DELETE FROM creneau
 WHERE date_fin_autorisee < CURRENT_DATE;
