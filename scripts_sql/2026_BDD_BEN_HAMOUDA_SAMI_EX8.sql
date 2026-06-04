@@ -1,23 +1,22 @@
--- ============================================================
--- Exercice 8 : Analyse de performance et creation d'index
--- Projet : Gestion de l'infrastructure de donnees du ZEvent
+-- =========================================================
+-- Exercice 8 : Analyse de performance et création d'index
+-- Projet : Gestion de l'infrastructure de données du ZEvent
 -- Realise par : Sami Ben Hamouda
--- ============================================================
+-- =========================================================
 
--- ============================================================
+-- ==========================================================
 -- Objectif :
 -- 1. Charger un grand volume de donnees
 -- 2. Executer une requete complexe sans index
 -- 3. Observer le plan d'execution avec EXPLAIN ANALYZE
 -- 4. Creer des index
 -- 5. Reexecuter la meme requete et comparer les performances
--- ============================================================
+-- ==========================================================
 
-
--- ============================================================
--- 1. Nettoyage des anciens index s'ils existent deja
+-- =========================================================
+-- 1. Nettoyage des anciens index s'ils existent dejà
 -- Cela permet de tester correctement la requete sans index.
--- ============================================================
+-- =========================================================
 
 DROP INDEX IF EXISTS idx_participation_defi_id_streamer;
 DROP INDEX IF EXISTS idx_participation_defi_id_defi;
@@ -27,17 +26,17 @@ DROP INDEX IF EXISTS idx_stream_id_streamer_date_fin_effective;
 DROP INDEX IF EXISTS idx_streamer_pseudo_trgm;
 
 
--- ============================================================
--- 2. Vidage des tables et remise a zero des identifiants
--- ============================================================
+-- ======================================================
+-- 2. Vidage des tables et remise a zéro des identifiants
+-- ======================================================
 
 TRUNCATE TABLE stream, participation_defi, creneau, defi, streamer
 RESTART IDENTITY CASCADE;
 
 
--- ============================================================
--- 3. Insertion de 50 000 streamers
--- ============================================================
+-- =============================
+-- 3. Oninsère  50 000 streamers
+-- =============================
 
 DO $$
 BEGIN
@@ -48,9 +47,9 @@ BEGIN
 END $$;
 
 
--- ============================================================
--- 4. Insertion de 50 000 defis
--- ============================================================
+-- =========================
+-- 4. On insère 50 000 defis
+-- =========================
 
 DO $$
 BEGIN
@@ -65,11 +64,10 @@ BEGIN
 END $$;
 
 
--- ============================================================
+-- =============================================================================================
 -- 5. Insertion de 250 000 participations
--- ON CONFLICT DO NOTHING evite les erreurs si le couple
--- id_streamer / id_defi existe deja.
--- ============================================================
+-- Ici, ON CONFLICT DO NOTHING évite les erreurs si le couple id_streamer / id_defi existe déja.
+-- =============================================================================================
 
 DO $$
 BEGIN
@@ -84,9 +82,9 @@ BEGIN
 END $$;
 
 
--- ============================================================
--- 6. Insertion de 100 000 creneaux
--- ============================================================
+-- ============================
+-- 6. J'insère 100 000 creneaux
+-- ============================
 
 DO $$
 DECLARE
@@ -114,9 +112,9 @@ BEGIN
 END $$;
 
 
--- ============================================================
+-- ===============================
 -- 7. Insertion de 100 000 streams
--- ============================================================
+-- ===============================
 
 DO $$
 DECLARE
@@ -157,9 +155,9 @@ BEGIN
 END $$;
 
 
--- ============================================================
--- 8. Verification du volume de donnees
--- ============================================================
+-- ====================================
+-- 8. Verification du volume de données
+-- ====================================
 
 SELECT COUNT(*) AS nombre_streamers FROM streamer;
 SELECT COUNT(*) AS nombre_defis FROM defi;
@@ -168,10 +166,10 @@ SELECT COUNT(*) AS nombre_creneaux FROM creneau;
 SELECT COUNT(*) AS nombre_streams FROM stream;
 
 
--- ============================================================
--- 9. Requete complexe SANS index
--- Observer le temps d'execution, les Seq Scan et les couts.
--- ============================================================
+-- ===========================================================
+-- 9. Requête complexe SANS index
+-- On observe le temps d'execution, les Seq Scan et les couts.
+-- ===========================================================
 
 EXPLAIN ANALYZE
 SELECT
@@ -197,9 +195,9 @@ ORDER BY
     d.intitule;
 
 
--- ============================================================
--- 10. Creation des index
--- ============================================================
+-- ======================
+-- 10. Création des index
+-- ======================
 
 CREATE INDEX idx_participation_defi_id_streamer
     ON participation_defi(id_streamer);
@@ -217,10 +215,10 @@ CREATE INDEX idx_stream_id_streamer_date_fin_effective
     ON stream(id_streamer, date_fin_effective);
 
 
--- ============================================================
+-- ==============================================================
 -- 11. Mise a jour des statistiques PostgreSQL
--- ANALYZE aide l'optimiseur a choisir un meilleur plan.
--- ============================================================
+-- ANALYZE permet d'aide l'optimiseur à choisir un meilleur plan.
+-- ==============================================================
 
 ANALYZE streamer;
 ANALYZE defi;
@@ -229,10 +227,10 @@ ANALYZE creneau;
 ANALYZE stream;
 
 
--- ============================================================
--- 12. Requete complexe APRES index
--- Comparer avec le resultat precedent.
--- ============================================================
+-- ======================================
+-- 12. Requête complexe APRES index
+-- Je compare avec le résultat précedent.
+-- ======================================
 
 EXPLAIN ANALYZE
 SELECT
@@ -258,9 +256,9 @@ ORDER BY
     d.intitule;
 
 
--- ============================================================
+-- ==========================================
 -- 13. Bonus : index pour les recherches LIKE
--- ============================================================
+-- ==========================================
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
@@ -268,9 +266,9 @@ CREATE INDEX idx_streamer_pseudo_trgm
     ON streamer USING gin (pseudo gin_trgm_ops);
 
 
--- ============================================================
+-- =====================================
 -- 14. Test du LIKE avec EXPLAIN ANALYZE
--- ============================================================
+-- =====================================
 
 EXPLAIN ANALYZE
 SELECT
@@ -285,72 +283,47 @@ GROUP BY
     s.pseudo;
 
 
--- ============================================================
--- 15. Resultats observes et conclusion de performance
--- ============================================================
+-- =======================================================
+-- 15. Résultats observés et conclusion sur la performance
+-- =======================================================
 
 -- Volume de donnees charge :
--- streamer              : environ 50 000 lignes
--- defi                  : environ 50 000 lignes
--- participation_defi    : environ 250 000 lignes
--- creneau               : environ 100 000 lignes
--- stream                : environ 100 000 lignes
+-- streamer : environ 50 000 lignes
+-- défi : environ 50 000 lignes
+-- participation_defi : environ 250 000 lignes
+-- créneau : environ 100 000 lignes
+-- stream : environ 100 000 lignes
 
--- Resultat global observe dans pgAdmin :
+-- Résultat global qu'on observe dans pgAdmin :
 -- Le script complet s'est execute correctement.
--- Temps total affiche par pgAdmin : environ 15,195 secondes.
+-- Temps total affiche par pgAdmin : 15,195 secondes.
 
 -- Observation avant index :
--- Avant la creation des index, PostgreSQL doit parcourir un grand
--- nombre de lignes pour effectuer les jointures entre streamer,
--- participation_defi, defi et stream.
--- On peut observer des Seq Scan, c'est-a-dire des parcours complets
--- de tables, notamment sur les tables volumineuses.
-
--- Planning Time avant index :
--- Non visible sur la capture.
-
--- Execution Time avant index :
--- Non visible sur la capture.
+-- Avant la creation des index, PostgreSQL doit parcourir un grand nombre de lignes pour effectuer les jointures entre streamer, participation_defi, defi et stream.
+-- On peut observer des Seq Scan, c'est-a-dire des parcours complets de tables, notamment sur les tables volumineuses.
 
 -- Observation apres index :
--- Apres la creation des index, PostgreSQL dispose de chemins d'acces
--- plus efficaces pour les jointures.
+-- Apres la création des index, PostgreSQL dispose de chemins d'acces plus efficaces pour les jointures.
 -- Les index les plus utiles sont :
 -- idx_participation_defi_id_streamer
 -- idx_participation_defi_id_defi
 -- idx_stream_id_streamer
 -- idx_stream_id_streamer_date_fin_effective
 
--- Planning Time apres index :
--- Non visible sur la capture.
-
--- Execution Time apres index :
--- Non visible sur la capture.
-
--- Gain de performance :
--- Le gain exact ne peut pas etre calcule ici car les deux temps
--- Execution Time avant et apres index ne sont pas visibles sur la capture.
--- Formule a utiliser :
+-- Formule a utiliser pour gain de performance :
 -- ((temps_avant - temps_apres) / temps_avant) * 100
 
 -- Observation sur le bonus LIKE :
 -- Pour la requete :
--- WHERE s.pseudo LIKE '%pseudo%1%'
--- PostgreSQL utilise l'index trigram idx_streamer_pseudo_trgm.
--- Le plan d'execution montre un Bitmap Index Scan puis un
--- Bitmap Heap Scan sur la table streamer.
+-- WHERE s.pseudo LIKE '%pseudo%1%' PostgreSQL utilise l'index trigram idx_streamer_pseudo_trgm.
+-- Le plan d'exécution montre un Bitmap Index Scan puis un Bitmap Heap Scan sur la table streamer.
 
--- Resultats observes pour le bonus LIKE :
+-- Résultats observés pour le bonus LIKE :
 -- Planning Time : 1.951 ms
 -- Execution Time : 140.042 ms
 
 -- Conclusion :
--- Les index ameliorent les performances principalement sur les jointures
--- et les filtres appliques a de grands volumes de donnees.
--- Sans index, PostgreSQL doit souvent parcourir beaucoup de lignes
--- avec des Seq Scan.
--- Avec les index, il peut retrouver plus rapidement les lignes utiles,
--- notamment dans les tables participation_defi et stream.
--- L'index trigram est aussi efficace pour optimiser les recherches LIKE
--- contenant un motif au milieu de la chaine, comme '%pseudo%1%'.
+-- Les index ameliorent les performances principalement sur les jointures et les filtres appliques a de grands volumes de donnees.
+-- Sans index, PostgreSQL doit souvent parcourir beaucoup de lignes avec des Seq Scan.
+-- Avec les index, il peut retrouver plus rapidement les lignes utiles, notamment dans les tables participation_defi et stream.
+-- L'index trigram est aussi efficace pour optimiser les recherches LIKE contenant un motif au milieu de la chaine, comme '%pseudo%1%'.
