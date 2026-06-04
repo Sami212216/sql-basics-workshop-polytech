@@ -1,12 +1,12 @@
--- ============================================================
+-- ==========================================================
 -- Exercice 1 : Creation et population de la base de donnees
 -- Projet : Gestion de l'infrastructure de donnees du ZEvent
 -- Realise par : Sami Ben Hamouda
--- ============================================================
+-- ==========================================================
 
--- ============================================================
--- 1. Suppression des tables si elles existent deja
--- ============================================================
+-- ==================================================================
+-- 1. Suppression des tables si elles existent déjà pour partir de 0
+-- ==================================================================
 
 DROP TABLE IF EXISTS stream CASCADE;
 DROP TABLE IF EXISTS participation_defi CASCADE;
@@ -14,9 +14,9 @@ DROP TABLE IF EXISTS creneau CASCADE;
 DROP TABLE IF EXISTS defi CASCADE;
 DROP TABLE IF EXISTS streamer CASCADE;
 
--- ============================================================
--- 2. Creation des tables
--- ============================================================
+-- =======================
+-- 2. Création des tables
+-- =======================
 
 CREATE TABLE streamer (
     id_streamer SERIAL PRIMARY KEY,
@@ -81,11 +81,12 @@ CREATE TABLE stream (
 );
 
 -- ============================================================
--- 3. Population de la table STREAMER
+-- 3. Table STREAMER
 -- Dictionnaire :
 -- id_streamer : identifiant unique du streamer
--- pseudo : pseudo Twitch unique
--- url_twitch : lien vers la chaine Twitch
+-- pseudo : pseudo Twitch unique du streamer
+-- url_twitch : lien vers la chaine Twitch du streamer
+-- J'ai choisi des streamers assez connus pour faire mes tests
 -- ============================================================
 
 INSERT INTO streamer (pseudo, url_twitch) VALUES
@@ -100,14 +101,15 @@ INSERT INTO streamer (pseudo, url_twitch) VALUES
 ('AngleDroit', 'https://twitch.tv/angledroit'),
 ('JoueurDuGrenier', 'https://twitch.tv/joueurdugrenier');
 
--- ============================================================
--- 4. Population de la table CRENEAU
+-- ==============================================================================
+-- 4. Table CRENEAU
 -- Dictionnaire :
--- id_creneau : identifiant unique du creneau
--- id_streamer : streamer autorise sur ce creneau
--- date_debut_autorisee : debut du creneau autorise
--- date_fin_autorisee : fin du creneau autorise
--- ============================================================
+-- id_creneau : identifiant unique du créneau
+-- id_streamer : streamer autorise sur ce créneau
+-- date_debut_autorisee : debut du créneau autorisé
+-- date_fin_autorisee : fin du créneau autorise
+-- J'ai choisi des créneaux aléatoires mais plutôt commun à beaucoup de streamers
+-- ==============================================================================
 
 INSERT INTO creneau (id_streamer, date_debut_autorisee, date_fin_autorisee) VALUES
 (1, '2025-09-05 18:00:00', '2025-09-05 21:00:00'),
@@ -140,14 +142,15 @@ INSERT INTO creneau (id_streamer, date_debut_autorisee, date_fin_autorisee) VALU
 (10, '2025-09-08 00:00:00', '2025-09-08 03:00:00'),
 (10, '2025-09-08 10:00:00', '2025-09-08 13:00:00');
 
--- ============================================================
--- 5. Population de la table DEFI
+-- =======================================================
+-- 5. Table DEFI
 -- Dictionnaire :
--- id_defi : identifiant unique du defi
--- intitule : nom du defi
+-- id_defi : identifiant unique du défi
+-- intitule : nom du défi
 -- montant_palier : objectif de donation en euros
--- etat_validation : indique si le defi est valide ou non
--- ============================================================
+-- etat_validation : indique si le defi est validé ou non
+-- J'ai choisi des défis commun du ZEvent
+-- =======================================================
 
 INSERT INTO defi (intitule, montant_palier, etat_validation) VALUES
 ('Saut en parachute', 100000.00, FALSE),
@@ -161,13 +164,13 @@ INSERT INTO defi (intitule, montant_palier, etat_validation) VALUES
 ('Blind test musical', 2500.00, TRUE),
 ('Defi sportif en live', 50000.00, FALSE);
 
--- ============================================================
--- 6. Population de la table PARTICIPATION_DEFI
+-- ==================================================
+-- 6. Table PARTICIPATION_DEFI
 -- Dictionnaire :
 -- id_streamer : identifiant du streamer participant
--- id_defi : identifiant du defi concerne
--- Cette table gere la relation plusieurs-a-plusieurs.
--- ============================================================
+-- id_defi : identifiant du défi concerne
+-- Cette table gère la relation n-n
+-- ==================================================
 
 INSERT INTO participation_defi (id_streamer, id_defi) VALUES
 (1, 1),
@@ -195,17 +198,18 @@ INSERT INTO participation_defi (id_streamer, id_defi) VALUES
 (7, 9),
 (8, 10);
 
--- ============================================================
--- 7. Population de la table STREAM
+-- =================================================================
+-- 7. Table STREAM
 -- Dictionnaire :
 -- id_stream : identifiant unique du stream
 -- id_streamer : streamer qui diffuse
--- id_creneau : creneau respecte par le stream
+-- id_creneau : créneau respecte par le stream
 -- titre : titre de la session
--- heure_debut : heure reelle de debut
--- heure_fin : heure prevue de fin
--- date_fin_effective : heure reelle de fin, nullable si non termine
--- ============================================================
+-- heure_debut : heure réelle de debut
+-- heure_fin : heure prévue de fin
+-- date_fin_effective : heure réelle de fin, nullable si non terminé
+-- J'ai choisi pas mal de live potentiellement possible sur twitch
+-- ==================================================================
 
 INSERT INTO stream (
     id_streamer,
@@ -236,9 +240,9 @@ INSERT INTO stream (
 (9, 17, 'Debat et blind test', '2025-09-07 10:05:00', '2025-09-07 11:50:00', '2025-09-07 11:55:00'),
 (10, 19, 'Cloture de nuit', '2025-09-08 00:10:00', '2025-09-08 02:50:00', NULL);
 
--- ============================================================
--- 8. Verification des donnees inserees
--- ============================================================
+-- =====================================
+-- 8. Vérification des données inserées
+-- =====================================
 
 SELECT * FROM streamer;
 SELECT * FROM creneau;
