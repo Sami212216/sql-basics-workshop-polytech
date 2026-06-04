@@ -3,7 +3,7 @@
 -- Projet : Gestion de l'infrastructure de donnees du ZEvent
 -- Réalise par : Sami Ben Hamouda
 -- ============================================================
-
+ 
 -- =============================================================================
 -- 1. Nombre total de streams par streamer
 -- On utilise LEFT JOIN pour afficher aussi les streamer qui n'ont aucun stream.
