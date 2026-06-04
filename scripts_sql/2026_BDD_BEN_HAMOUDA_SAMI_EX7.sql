@@ -1,17 +1,14 @@
--- ============================================================
+-- =========================================================
 -- Exercice 7 : Gestion des validations avec CASE
--- Projet : Gestion de l'infrastructure de donnees du ZEvent
--- Realise par : Sami Ben Hamouda
--- ============================================================
+-- Projet : Gestion de l'infrastructure de données du ZEvent
+-- Réalise par : Sami Ben Hamouda
+-- =========================================================
 
--- ============================================================
--- PARTIE A : Validation des streams contre les creneaux
--- Objectif :
--- Verifier si chaque stream respecte son creneau autorise.
--- Un stream est VALIDE si :
--- heure_debut >= date_debut_autorisee
--- ET heure_fin <= date_fin_autorisee
--- ============================================================
+-- ================================================================================================
+-- PARTIE A : Validation des streams contre les créneaux
+-- Objectif : vérifier si chaque stream respecte son creneau autorisé.
+-- Un stream est VALIDE si : heure_debut >= date_debut_autorisee ET heure_fin <= date_fin_autorisee
+-- ================================================================================================
 
 SELECT
     st.titre,
@@ -34,11 +31,10 @@ JOIN creneau c
 ORDER BY
     st.heure_debut ASC;
 
--- ============================================================
+-- ========================================================================================
 -- Identification des streams invalides
--- Cette requete peut retourner 0 ligne si tous les streams
--- respectent bien leurs creneaux.
--- ============================================================
+-- Cette requête peut retourner 0 ligne si tous les streams respectent bien leurs créneaux.
+-- ========================================================================================
 
 SELECT
     st.titre,
@@ -59,12 +55,11 @@ WHERE NOT (
 ORDER BY
     st.heure_debut ASC;
 
--- ============================================================
--- PARTIE B : Detection des depassements de fin
--- Objectif :
--- Comparer l'heure de fin prevue et la date de fin effective.
--- Si date_fin_effective > heure_fin, il y a DEPASSEMENT.
--- ============================================================
+-- ======================================================================
+-- PARTIE B : Détection des depassements de fin
+-- Objectif : Comparer l'heure de fin prevue et la date de fin effective.
+-- Ici, si la date_fin_effective > heure_fin, il y a qlors DEPASSEMENT.
+-- ======================================================================
 
 SELECT
     st.titre,
@@ -92,11 +87,10 @@ JOIN streamer s
 ORDER BY
     st.heure_debut ASC;
 
--- ============================================================
--- Resume des depassements
--- On compte les streams en retard et on calcule
--- la duree moyenne de retard en minutes.
--- ============================================================
+-- ====================================================================================
+-- Résume des dépassements
+-- On compte les streams en retard et on calcule la duree moyenne de retard en minutes.
+-- ====================================================================================
 
 SELECT
     COUNT(*) AS nombre_streams_en_retard,
@@ -108,12 +102,12 @@ FROM stream
 WHERE date_fin_effective IS NOT NULL
   AND date_fin_effective > heure_fin;
 
--- ============================================================
+-- =============================================
 -- PARTIE C : Requete combinee
 -- Apercu complet de la conformite des streams :
--- 1. Respect du creneau autorise
--- 2. Detection du depassement de fin
--- ============================================================
+-- 1. Respect du créneau autorisé
+-- 2. Détection du depassement de fin
+-- =============================================
 
 SELECT
     st.titre,
