@@ -21,12 +21,11 @@ ORDER BY
     s.pseudo ASC,
     c.date_debut_autorisee ASC;
 
--- =======================================================
+-- ============================================================================
 -- 2. Streams avec informations du streamer et du créneau
--- Afficher le titre du stream, le pseudo du streamer,
--- et les dates du creneau.
+-- Afficher le titre du stream, le pseudo du streamer, et les dates du creneau.
 -- Filtrer sur les streams du 2025-09-05 ou du 2025-09-06.
--- =======================================================
+-- ============================================================================
 
 SELECT
     st.titre,
