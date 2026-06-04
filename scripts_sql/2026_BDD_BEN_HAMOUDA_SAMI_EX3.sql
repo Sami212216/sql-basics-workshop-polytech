@@ -1,13 +1,13 @@
--- ============================================================
--- Exercice 3 : Requetes de jointure simples
--- Projet : Gestion de l'infrastructure de donnees du ZEvent
--- Realise par : Sami Ben Hamouda
--- ============================================================
+-- ==========================================================
+-- Exercice 3 : Requêtes de jointure simples
+-- Projet : Gestion de l'infrastructure de données du ZEvent
+-- Réalise par : Sami Ben Hamouda
+-- ==========================================================
 
 -- ============================================================
--- 1. Streamers et leurs creneaux
--- Afficher le pseudo du streamer et les dates de ses creneaux.
--- Resultat ordonne par pseudo puis par date de creneau.
+-- 1. Streamers et leurs créneaux
+-- Afficher le pseudo du streamer et les dates de ses créneaux.
+-- J'ordonne les résultats par pseudo puis par date de créneau.
 -- ============================================================
 
 SELECT
@@ -21,12 +21,12 @@ ORDER BY
     s.pseudo ASC,
     c.date_debut_autorisee ASC;
 
--- ============================================================
--- 2. Streams avec informations du streamer et du creneau
+-- =======================================================
+-- 2. Streams avec informations du streamer et du créneau
 -- Afficher le titre du stream, le pseudo du streamer,
 -- et les dates du creneau.
 -- Filtrer sur les streams du 2025-09-05 ou du 2025-09-06.
--- ============================================================
+-- =======================================================
 
 SELECT
     st.titre,
@@ -44,12 +44,11 @@ WHERE DATE(st.heure_debut) IN ('2025-09-05', '2025-09-06')
 ORDER BY
     st.heure_debut ASC;
 
--- ============================================================
--- 3. Defis et leurs participants
--- Afficher l'intitule du defi, les pseudos des streamers
--- participants et le montant du palier.
--- Utilisation de la table de liaison participation_defi.
--- ============================================================
+-- ============================================================================================
+-- 3. Défis et leurs participants
+-- Afficher l'intitule du défi, les pseudos des streamers participants et le montant du palier.
+-- J'utilise la table de liaison participation_defi.
+-- ============================================================================================
 
 SELECT
     d.intitule,
