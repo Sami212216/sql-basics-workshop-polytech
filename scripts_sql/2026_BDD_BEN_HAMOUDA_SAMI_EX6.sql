@@ -1,14 +1,13 @@
--- ============================================================
--- Exercice 6 : Requetes avancees sur les donnees existantes
+-- =========================================================
+-- Exercice 6 : Requêtes avancées sur les données existantes
 -- Projet : Gestion de l'infrastructure de donnees du ZEvent
--- Realise par : Sami Ben Hamouda
--- ============================================================
+-- Réalise par : Sami Ben Hamouda
+-- =========================================================
 
--- ============================================================
+-- ==========================================================================
 -- 1. Streamers ayant au moins un defi
--- Affiche le pseudo du streamer et le nombre de defis
--- auxquels il participe.
--- ============================================================
+-- Affiche le pseudo du streamer et le nombre de défis auxquels il participe.
+-- ==========================================================================
 
 SELECT
     s.pseudo,
@@ -24,11 +23,10 @@ ORDER BY
     nombre_defis DESC,
     s.pseudo ASC;
 
--- ============================================================
+-- ====================================================================================
 -- 2. Defis n'ayant aucun participant
--- Utilisation de NOT EXISTS pour detecter les defis
--- absents de la table participation_defi.
--- ============================================================
+-- J'utilise NOT EXISTS pour détecter les défis absents de la table participation_defi.
+-- ====================================================================================
 
 SELECT
     d.intitule,
@@ -42,10 +40,10 @@ WHERE NOT EXISTS (
 ORDER BY
     d.intitule ASC;
 
--- ============================================================
+-- ===============================================
 -- 3. Defis ayant plus de 2 streamers participants
--- On compte le nombre de participants par defi.
--- ============================================================
+-- On compte le nombre de participants par défi.
+-- ===============================================
 
 SELECT
     d.intitule,
@@ -63,11 +61,10 @@ ORDER BY
     nombre_participants DESC,
     d.intitule ASC;
 
--- ============================================================
--- 4. Nombre de defis par streamer avec le montant total engage
--- Pour chaque streamer, on affiche :
--- pseudo, nombre de defis, montant total des paliers.
--- ============================================================
+-- ======================================================================================
+-- 4. Nombre de défis par streamer avec le montant total engage
+-- Pour chaque streamer, on affiche : pseudo, nombre de defis, montant total des paliers.
+-- ======================================================================================
 
 SELECT
     s.pseudo,
@@ -85,12 +82,10 @@ ORDER BY
     montant_total_engage DESC,
     s.pseudo ASC;
 
--- ============================================================
--- 5. Streamers et creneaux avec nombre de streams effectues
--- par creneau.
--- On affiche le pseudo, les dates du creneau et le nombre
--- de streams lies a ce creneau.
--- ============================================================
+-- =====================================================================================
+-- 5. Streamers et creneaux avec nombre de streams effectués par créneau.
+-- On affiche le pseudo, les dates du créneau et le nombre de streams lies a ce créneau.
+-- =====================================================================================
 
 SELECT
     s.pseudo,
