@@ -1,13 +1,13 @@
--- ============================================================
--- Exercice 2 : Requetes SELECT simples et filtrees
--- Projet : Gestion de l'infrastructure de donnees du ZEvent
+-- ==========================================================
+-- Exercice 2 : Requêtes SELECT simples et filtrées
+-- Projet : Gestion de l'infrastructure de données du ZEvent
 -- Realise par : Sami Ben Hamouda
--- ============================================================
+-- ==========================================================
 
--- ============================================================
+-- ===========================================
 -- 1. Tous les streamers avec leur URL Twitch,
---    ordonnes par pseudo
--- ============================================================
+--    Je les ordonne par pseudo
+-- ===========================================
 
 SELECT 
     pseudo,
@@ -15,10 +15,10 @@ SELECT
 FROM streamer
 ORDER BY pseudo ASC;
 
--- ============================================================
--- 2. Les creneaux du samedi 2025-09-06
+-- ===============================================
+-- 2. Les créneaux du samedi 2025-09-06
 --    Utilisation de DATE() pour extraire la date
--- ============================================================
+-- ===============================================
 
 SELECT 
     id_creneau,
@@ -29,9 +29,9 @@ FROM creneau
 WHERE DATE(date_debut_autorisee) = '2025-09-06'
 ORDER BY date_debut_autorisee ASC;
 
--- ============================================================
--- 3. Les defis valides ayant un montant palier > 5000 euros
--- ============================================================
+-- ===================================================================
+-- 3. Les défis validés ayant un montant palier supérieur à 5000 euros
+-- ===================================================================
 
 SELECT 
     id_defi,
@@ -43,10 +43,10 @@ WHERE etat_validation = TRUE
   AND montant_palier > 5000
 ORDER BY montant_palier DESC;
 
--- ============================================================
+-- =====================================================
 -- 4. Les streams dont la date de fin effective est NULL
---    Cela correspond aux streams non termines
--- ============================================================
+--    Cela correspond aux streams non terminés
+-- =====================================================
 
 SELECT 
     id_stream,
